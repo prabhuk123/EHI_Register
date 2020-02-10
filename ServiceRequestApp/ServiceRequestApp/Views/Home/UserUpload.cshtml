@@ -1,0 +1,147 @@
+﻿
+@{
+    ViewData["Title"] = "UserUpload";
+}
+
+<h2>User Upload</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <form id="serviceRequestupload" method="POST"  enctype="multipart/form-data">
+         
+            <div class="form-group">
+                <label for="exampleInputPassword1">User ID</label>
+                <input type="text" class="form-control" value="119" id="txt_UserId" disabled autocomplete="off"  placeholder="User Id">
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputPassword1">Email</label>
+                <input type="email" class="form-control" id="txt_Email" autocomplete="off"  placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">CV</label>
+                <input type="file" class="form-control" id="cvfile" accept=".pdf"  autocomplete="off"  required>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" id="btnSubmit"  value="Submit" class="btn btn-default" />
+                @*<button type="submit" id="btnSubmit"  value="Submit" class="btn btn-default"></button>*@
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript">
+    //function file1Content($fileContent) {
+    //    debugger;
+    //    var BankLatterCheckBsae64Image = $fileContent;
+    //}
+    $(document).ready(function () {
+       // $("#txt_UserId").val(localStorage.getItem('regId'));
+        //$.ajax({
+        //    url: "http://localhost:61804/api/HomeService/GetCategories",
+        //    type: 'GET',
+        //    dataType: 'json',
+        //    async: false,
+        //    contentType: "application/json",
+        //    success: function (responsive) {
+        //        if (responsive != null) {
+        //            debugger;
+        //            //for (var i = 0; i < responsive.length; i++) {
+        //            //    $('#ddl_Product').append($('<option value=' + responsive[i].ProductId + '>' + responsive[i].ProductName + '</option>'));
+        //            //}
+        //            $.each(responsive, function (index, data) {
+
+        //                $('#ddl_Product').append($('<option></option>').val(data.productId).html(data.productName))
+        //            });
+        //            //$.each(responsive, function (i, item) {
+        //            //    $('#ddl_Product').append($('<option>', {
+        //            //        value: item.productId,
+        //            //        text: item.productName
+        //            //    }));
+        //            //});
+        //        }
+        //    }
+        //});
+
+    });
+
+
+    $('#serviceRequestupload').submit(function () {
+        debugger;
+
+        //// Get form
+        //var form = $('#fileUploadForm')[0];
+
+        //// Create an FormData object 
+        //var data = new FormData(form);
+
+        //// If you want to add an extra field for the FormData
+        //data.append("Id", "This");
+        //data.append("Email", "testing");
+       
+        window.location.href = '/Home/UserInfo';
+        var formData = new FormData();
+        formData.append('id', $('#txt_UserId').val());
+        formData.append('email', $('#txt_Email').val());
+        // Attach file
+        formData.append('image1', $('input[type=file]')[0].files[0]);
+
+
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: "/Home/GetSecuredData",
+            data: formData,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                
+                if (data != null) {
+                    sendtouploadData(data);
+                }
+                alert("File Successfully Uploaded");
+              },
+            error: function (e) {
+
+            }
+        });
+
+        alert("File Successfully Uploaded");
+    });
+
+      
+
+    function sendtouploadData(data) {
+        debugger;
+       
+        $.ajax({
+            url: "http://localhost:61804/api/HomeService/userupload",
+            type: 'POST',
+            dataType: 'json',
+            async: false,
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function (responsive) {
+                debugger;
+              
+                if (responsive.success == 'true') {
+                    alert(responsive.message);
+                    window.location.href = '/Home/UserInfo';
+                }
+                else {
+                    alert(responsive.message);
+                }
+
+            }
+
+        });
+    }
+
+   
+</script>

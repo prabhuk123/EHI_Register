@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewData["Title"] = "User Information";
+}
+
+<h2>User Information</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        
+        <form id="serviceRequest" onsubmit="return false;" method="post" autocomplete="off" >
+            <div class="form-group">
+                @*<input type="button" id="btncreatebutton" value="Click here to Create" class="btn btn-default" />*@
+                <button id="btncreatebutton" name="btncreatebutton" value="Click here to Register " class="btn btn-info">Click here to Register</button>
+            </div>
+            <div id="divuserinfo" hidden>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">First Name</label>
+                    <input type="text" class="form-control" id="txt_FName" autocomplete="off" placeholder="First Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Last Name</label>
+                    <input type="text" class="form-control" id="txt_LName" autocomplete="off" placeholder="Last Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Email</label>
+                    <input type="email" class="form-control" id="txt_Email" autocomplete="off" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Work Exp</label>
+                    <input type="text" class="form-control" id="txt_WorkExp" autocomplete="off" placeholder="Work Exp" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-success" />
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+      $("#divuserinfo").hide();
+       
+    });
+    $("#serviceRequest").submit(function (evt) {
+             submitData();
+    });
+    $("#btncreatebutton").click(function () {
+        debugger;
+        $("#divuserinfo").show();
+        $("#btncreatebutton").hide();
+    });
+
+    //$("#btncreatebutton").on("click", function () {
+    //    alert("test");
+    //});
+    function submitData() {
+        debugger;
+        var serviceRequest = {};
+        serviceRequest.firstname = $('#txt_FName').val();
+        serviceRequest.lastname = $('#txt_LName').val();
+        serviceRequest.email = $('#txt_Email').val();
+        serviceRequest.wrkExp = $('#txt_WorkExp').val();
+
+       
+        $.ajax({
+            url: "http://localhost:61804/api/HomeService/userinfo",
+            type: 'POST',
+            dataType: 'json',
+            async: false,
+            data: JSON.stringify(serviceRequest),
+            contentType: "application/json",
+            success: function (responsive) {
+                debugger;
+                //localStorage.setItem('regId', 1);
+                //window.location.href = '/Home/UserUpload';
+                if (responsive.success == 'true') {
+                    alert(responsive.message);
+                    localStorage.setItem('regId', responsive.id);
+                    window.location.href = '/Home/UserUpload';
+                }
+                else {
+                    alert(responsive.message);
+                }
+                
+            }
+
+        });
+    }
+</script>
